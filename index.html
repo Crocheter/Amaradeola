@@ -27,66 +27,64 @@
     <title>Amaradeola</title>
 </head>
 <body style="margin: 0px; overflow: hidden">
-    <div class="arjs-loader">
-      <div>Loading, please wait...</div>
-    </div>
-    <div id="startOverlay" style="
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.85);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 99999;
-        font-size: 24px;
-        text-align: center;
-        cursor: pointer;
-        ">
-        Tap to Start Experience
-    </div>
-    
-    <img id="audioGif" src="./Assets/playing.gif" alt="Audio Playing"
-        style="position: fixed; bottom: 20px; right: 20px; width: 80px; height: 80px; display: none; z-index: 9999;" 
-    />
+  <div class="arjs-loader">
+    <div>Loading, please wait...</div>
+  </div>
+  <div id="startOverlay" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    font-size: 24px;
+    text-align: center;
+    cursor: pointer;">
+    Tap to Start Experience
+  </div>
 
-    <a-scene
-      vr-mode-ui="enabled: false"
-      embedded
-      renderer="logarithmicDepthBuffer: true;"
-      arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+  <a-scene
+    vr-mode-ui="enabled: false"
+    embedded
+    renderer="logarithmicDepthBuffer: true;"
+    arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+  >
+    <a-entity light="type: ambient; intensity: 1"></a-entity>
+    <a-assets>
+      <audio id="mySound" src="./Assets/mummy.mp3" preload="auto"></audio>
+    </a-assets>
+
+    <a-nft
+      id="nftMarker"
+      type="nft"
+      url="./Assets/amaradeola"
+      smooth="true"
+      smoothCount="10"
+      smoothTolerance=".01"
+      smoothThreshold="5"
     >
-      <a-entity light="type: ambient; intensity: 1"></a-entity>
-      <a-assets>
-        <audio id="mySound" src="./Assets/mummy.mp3" preload="auto"></audio>
-      </a-assets>
+      <a-plane
+        src="#mySound"
+        width="1"
+        height="1"
+        position="0 0 0"
+        rotation="-90 0 0"
+        >
+      </a-plane>
+    </a-nft>
 
-      <a-nft
-        id="nftMarker"
-        type="nft"
-        url="./Assets/amaradeola"
-        smooth="true"
-        smoothCount="10"
-        smoothTolerance=".01"
-        smoothThreshold="5"
-      >
-        <a-plane
-          src="#mySound"
-          width="1"
-          height="1"
-          position="0 0 0"
-          rotation="-90 0 0"
-          >
-        </a-plane>
-      </a-nft>
+    <a-entity camera></a-entity>
+  </a-scene>
+  <img id="audioGif" src="./Assets/playing.gif" alt="Audio Playing"
+    style="position: fixed; bottom: 20px; right: 20px; width: 80px; height: 80px; display: none; z-index: 9999;" 
+  />
 
-      <a-entity camera></a-entity>
-    </a-scene>
-  </body>
-<script>
+  <script>
   const marker = document.querySelector("#nftMarker");
   const audio = document.querySelector("#mySound");
   const startOverlay = document.getElementById("startOverlay");
@@ -117,5 +115,5 @@
     });
   });
 </script>
-
+</body>
 </html>
