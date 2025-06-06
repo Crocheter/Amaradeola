@@ -27,9 +27,10 @@
     <title>Amaradeola</title>
 </head>
 <body style="margin: 0px; overflow: hidden">
-  <div class="arjs-loader">
+  <div id="loadingOverlay" class="arjs-loader">
     <div>Loading, please wait...</div>
   </div>
+
   <div id="startOverlay" style="
     position: fixed;
     top: 0;
@@ -38,15 +39,17 @@
     height: 100%;
     background: rgba(0, 0, 0, 0.85);
     color: white;
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     z-index: 99999;
     font-size: 24px;
     text-align: center;
-    cursor: pointer;">
+    cursor: pointer;
+  ">
     Tap to Start Experience
   </div>
+
 
   <a-scene
     vr-mode-ui="enabled: false"
@@ -83,51 +86,64 @@
   <img id="audioGif" src="./Assets/playing.gif" alt="Audio Playing"
     style="position: fixed; bottom: 20px; right: 20px; width: 80px; height: 80px; display: none; z-index: 9999;" 
   />
-
-  <script>
-  const marker = document.querySelector("#nftMarker");
+ <script>
   const audio = document.querySelector("#mySound");
+  const marker = document.querySelector("#nftMarker");
   const startOverlay = document.getElementById("startOverlay");
+  const loadingOverlay = document.getElementById("loadingOverlay");
   const audioGif = document.getElementById("audioGif");
 
   let userTapped = false;
   let arReady = false;
+  let audioPrimed = false;
 
-  function initARAudio() {
+  function tryInitARAudio() {
     if (userTapped && arReady) {
+      // Hide tap screen now that everything is ready
+      startOverlay.style.display = "none";
+
       marker.addEventListener("markerFound", () => {
-        console.log("Marker Found");
+        console.log("Marker found → playing audio");
         audio.play();
         audioGif.style.display = "block";
       });
 
       marker.addEventListener("markerLost", () => {
-        console.log("Marker Lost");
+        console.log("Marker lost → stopping audio");
         audio.pause();
         audio.currentTime = 0;
         audioGif.style.display = "none";
       });
     }
   }
-  startOverlay.addEventListener("click", () => {
-    audio.play().then(() => {
-      audio.pause();
-      audio.currentTime = 0;
-    }).catch((e) => {
-      console.warn("Autoplay not allowed:", e);
-    });
 
-    userTapped = true;
-    startOverlay.style.display = "none";
-
-    initARAudio(); 
-  });
-
+  // AR.js scene is fully loaded
   window.addEventListener("arjs-nft-loaded", () => {
     arReady = true;
-    initARAudio(); 
+    console.log("AR.js is ready");
+    loadingOverlay.style.display = "none";
+    startOverlay.style.display = "flex"; // Now prompt user to tap
+    tryInitARAudio();
+  });
+
+  // User taps to allow audio
+  startOverlay.addEventListener("click", () => {
+    // Prime the audio (required for mobile autoplay)
+    if (!audioPrimed) {
+      audio.play().then(() => {
+        audio.pause();
+        audio.currentTime = 0;
+        audioPrimed = true;
+        console.log("Audio primed");
+        userTapped = true;
+        tryInitARAudio();
+      }).catch((e) => {
+        console.warn("Error priming audio:", e);
+      });
+    }
   });
 </script>
+
 
 </body>
 </html>
