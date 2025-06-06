@@ -100,7 +100,8 @@
   <img id="audioGif" src="./Assets/playing.gif" alt="Audio Playing"
     style="position: fixed; bottom: 20px; right: 20px; width: 80px; height: 80px; display: none; z-index: 9999;" 
   />
- <script>
+
+<script>
   const audio = document.querySelector("#mySound");
   const marker = document.querySelector("#nftMarker");
   const startOverlay = document.getElementById("startOverlay");
@@ -110,16 +111,18 @@
   let userTapped = false;
   let arReady = false;
   let audioPrimed = false;
+  let markerEventsAttached = false;
 
   function tryInitARAudio() {
-    if (userTapped && arReady) {
-      // Hide tap screen now that everything is ready
+    if (userTapped && arReady && !markerEventsAttached) {
       startOverlay.style.display = "none";
 
       marker.addEventListener("markerFound", () => {
         console.log("Marker found → playing audio");
-        audio.play();
-        audioGif.style.display = "block";
+        if (audioPrimed) {
+          audio.play();
+          audioGif.style.display = "block";
+        }
       });
 
       marker.addEventListener("markerLost", () => {
@@ -128,6 +131,8 @@
         audio.currentTime = 0;
         audioGif.style.display = "none";
       });
+
+      markerEventsAttached = true; // Prevent double binding
     }
   }
 
@@ -135,27 +140,33 @@
     arReady = true;
     console.log("AR.js is ready");
     loadingOverlay.style.display = "none";
-    startOverlay.style.display = "flex"; 
+    startOverlay.style.display = "flex";
     tryInitARAudio();
   });
 
   startOverlay.addEventListener("click", () => {
-    if (!audioPrimed) {
-      audio.play().then(() => {
-        audio.pause();
-        audio.currentTime = 0;
-        audioPrimed = true;
-        console.log("Audio primed");
-        userTapped = true;
-        tryInitARAudio();
-      }).catch((e) => {
-        console.warn("Error priming audio:", e);
-      });
+    userTapped = true;
+    audioPrimed = true;
+    tryInitARAudio();
+
+    // Silent unlock without actually playing
+    const silentUnlock = audio.play();
+    if (silentUnlock !== undefined) {
+      silentUnlock
+        .then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+          console.log("Audio primed silently");
+        })
+        .catch((e) => {
+          console.warn("Error priming audio:", e);
+        });
     }
   });
 
+  // --- Swipe logic for magazine pages ---
   const pages = ["#page2", "#page3", "#page4", "#page5", "#page6", "#page7"];
-  let currentPage = 0
+  let currentPage = 0;
   const magazinePlane = document.getElementById("magazinePage");
 
   function showPage(index) {
@@ -184,9 +195,7 @@
 
     startX = null;
   });
-
 </script>
-
 
 </body>
 </html>
