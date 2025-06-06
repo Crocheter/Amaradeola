@@ -90,8 +90,26 @@
   const startOverlay = document.getElementById("startOverlay");
   const audioGif = document.getElementById("audioGif");
 
+  let userTapped = false;
+  let arReady = false;
+
+  function initARAudio() {
+    if (userTapped && arReady) {
+      marker.addEventListener("markerFound", () => {
+        console.log("Marker Found");
+        audio.play();
+        audioGif.style.display = "block";
+      });
+
+      marker.addEventListener("markerLost", () => {
+        console.log("Marker Lost");
+        audio.pause();
+        audio.currentTime = 0;
+        audioGif.style.display = "none";
+      });
+    }
+  }
   startOverlay.addEventListener("click", () => {
-    // Unlock audio
     audio.play().then(() => {
       audio.pause();
       audio.currentTime = 0;
@@ -99,21 +117,17 @@
       console.warn("Autoplay not allowed:", e);
     });
 
+    userTapped = true;
     startOverlay.style.display = "none";
 
-    marker.addEventListener("markerFound", () => {
-      console.log("Marker Found");
-      audio.play();
-      audioGif.style.display = "block"; // Show GIF
-    });
+    initARAudio(); 
+  });
 
-    marker.addEventListener("markerLost", () => {
-      console.log("Marker Lost");
-      audio.pause();
-      audio.currentTime = 0;
-      audioGif.style.display = "none"; // Hide GIF
-    });
+  window.addEventListener("arjs-nft-loaded", () => {
+    arReady = true;
+    initARAudio(); 
   });
 </script>
+
 </body>
 </html>
