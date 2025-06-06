@@ -61,12 +61,12 @@
     <a-assets>
       <audio id="mySound" src="./Assets/mummy.mp3" preload="auto"></audio>
 
-      <img id="page1" src="./Assets/page2.jpg">
-      <img id="page2" src="./Assets/page3.jpg">
-      <img id="page3" src="./Assets/page4.jpg">
-      <img id="page1" src="./Assets/page5.jpg">
-      <img id="page2" src="./Assets/page6.jpg">
-      <img id="page3" src="./Assets/page7.jpg">
+      <img id="page2" src="./Assets/page2.jpg">
+      <img id="page3" src="./Assets/page3.jpg">
+      <img id="page4" src="./Assets/page4.jpg">
+      <img id="page5" src="./Assets/page5.jpg">
+      <img id="page6" src="./Assets/page6.jpg">
+      <img id="page7" src="./Assets/page7.jpg">
     </a-assets>
 
     <a-nft
@@ -154,12 +154,12 @@
     }
   });
 
-  const pages = ["#page1", "#page2", "#page3"];
-  let currentPage = 0;
+  const pages = ["#page2", "#page3", "#page4", "#page5", "#page6", "#page7"];
+  let currentPage = 0
   const magazinePlane = document.getElementById("magazinePage");
 
   function showPage(index) {
-    magazinePlane.setAttribute("src", pages[index]);
+    magazinePlane.setAttribute("material", "src", pages[index]);
   }
 
   let startX = null;
