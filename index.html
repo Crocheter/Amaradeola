@@ -56,6 +56,7 @@
     embedded
     renderer="logarithmicDepthBuffer: true;"
     arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
+    touch-action="none"
   >
     <a-entity light="type: ambient; intensity: 1"></a-entity>
     <a-assets>
@@ -165,36 +166,43 @@
   });
 
   // --- Swipe logic for magazine pages ---
-  const pages = ["#page2", "#page3", "#page4", "#page5", "#page6", "#page7"];
-  let currentPage = 0;
-  const magazinePlane = document.getElementById("magazinePage");
+  window.addEventListener('DOMContentLoaded', () => {
+    const pages = ["#page2", "#page3", "#page4", "#page5", "#page6", "#page7"];
+    let currentPage = 0;
+    const magazinePlane = document.getElementById("magazinePage");
 
-  function showPage(index) {
-    magazinePlane.setAttribute("material", "src", pages[index]);
-  }
-
-  let startX = null;
-
-  document.addEventListener("touchstart", (e) => {
-    startX = e.touches[0].clientX;
-  });
-
-  document.addEventListener("touchend", (e) => {
-    if (startX === null) return;
-    let endX = e.changedTouches[0].clientX;
-    let diff = startX - endX;
-
-    if (Math.abs(diff) > 30) {
-      if (diff > 0 && currentPage < pages.length - 1) {
-        currentPage++;
-      } else if (diff < 0 && currentPage > 0) {
-        currentPage--;
-      }
-      showPage(currentPage);
+    function showPage(index) {
+      console.log("Flipping to page index:", index, pages[index]);
+      magazinePlane.setAttribute("material", "src", pages[index]);
     }
 
-    startX = null;
+    let startX = null;
+
+    document.addEventListener("touchstart", (e) => {
+      startX = e.touches[0].clientX;
+      console.log("Touch start:", startX);
+    });
+
+    document.addEventListener("touchend", (e) => {
+      if (startX === null) return;
+      let endX = e.changedTouches[0].clientX;
+      let diff = startX - endX;
+
+      if (Math.abs(diff) > 30) {
+        if (diff > 0 && currentPage < pages.length - 1) {
+          currentPage++;
+        } else if (diff < 0 && currentPage > 0) {
+          currentPage--;
+        }
+        showPage(currentPage);
+      }
+
+      startX = null;
+      console.log("Touch end:", endX, "Diff:", diff);
+      alert("Swipe detected");
+    });
   });
+
 </script>
 
 </body>
