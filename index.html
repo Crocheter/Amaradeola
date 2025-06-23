@@ -89,9 +89,9 @@
       </a-plane>
       <a-entity
         id="magazinePage"
-        geometry="primitive: plane; width: 600; height: 600"
+        geometry="primitive: plane; width: 150; height: 200"
         material="src: #page2"
-        position="80 700 0"
+        position="120 0.5 -80"
         rotation="-90 0 0">
       </a-entity>
     </a-nft>
@@ -170,10 +170,12 @@
     const pages = ["#page2", "#page3", "#page4", "#page5", "#page6", "#page7"];
     let currentPage = 0;
     const magazinePlane = document.getElementById("magazinePage");
+    magazinePlane.setAttribute("visible", false);
 
     function showPage(index) {
-      console.log("Flipping to page index:", index, pages[index]);
+      const pageId = pages[index];
       magazinePlane.setAttribute("material", "src", pages[index]);
+      magazinePlane.setAttribute("visible", true)
     }
 
     let startX = null;
@@ -189,17 +191,22 @@
       let diff = startX - endX;
 
       if (Math.abs(diff) > 30) {
-        if (diff > 0 && currentPage < pages.length - 1) {
-          currentPage++;
-        } else if (diff < 0 && currentPage > 0) {
-          currentPage--;
+        if (!magazinePlane.getAttribute("visible")) {
+          // First swipe → just show page 0
+          showPage(0);
+        } else {
+          if (diff > 0 && currentPage < pages.length - 1) {
+            currentPage++;
+            showPage(currentPage);
+          } else if (diff < 0 && currentPage > 0) {
+            currentPage--;
+            showPage(currentPage);
+          }
         }
-        showPage(currentPage);
       }
 
       startX = null;
       console.log("Touch end:", endX, "Diff:", diff);
-      alert("Swipe detected");
     });
   });
 
