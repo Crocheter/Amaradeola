@@ -211,8 +211,10 @@
               } else if (currentPage === 0) {
                 // Hide page and resume audio
                 magazinePlane.setAttribute("visible", false);
-                audio.play();
-                audioGif.style.display = "block";
+                if (marker.object3D.visible) {
+                  audio.play();
+                  audioGif.style.display = "block";
+                }
               }
             }
         }
