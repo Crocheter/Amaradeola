@@ -91,7 +91,7 @@
         id="magazinePage"
         geometry="primitive: plane; width: 150; height: 200"
         material="src: #page2"
-        position="120 0.5 -80"
+        position="100 0.1 -100"
         rotation="-90 0 0">
       </a-entity>
     </a-nft>
@@ -191,6 +191,12 @@
       let diff = startX - endX;
 
       if (Math.abs(diff) > 30) {
+
+        // audio off when swiped
+        audio.pause();
+        audio.currentTime = 0;
+        audioGif.style.display = "none";
+
         if (!magazinePlane.getAttribute("visible")) {
           // First swipe → just show page 0
           showPage(0);
