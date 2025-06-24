@@ -147,9 +147,7 @@
 
   startOverlay.addEventListener("click", () => {
     userTapped = true;
-    audioPrimed = true;
-    tryInitARAudio();
-
+    
     // Silent unlock without actually playing
     const silentUnlock = audio.play();
     if (silentUnlock !== undefined) {
@@ -157,7 +155,9 @@
         .then(() => {
           audio.pause();
           audio.currentTime = 0;
+          audioPrimed = true;
           console.log("Audio primed silently");
+          tryInitARAudio();
         })
         .catch((e) => {
           console.warn("Error priming audio:", e);
